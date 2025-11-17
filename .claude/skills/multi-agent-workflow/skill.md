@@ -1,155 +1,240 @@
-# Multi-Agent Workflow Skill
+# Multi-Agent Workflow Skill - EXECUTION SCRIPT
 
-You are now executing a structured multi-agent workflow designed to prevent context window exhaustion during large implementations.
+You are now executing a structured multi-agent workflow. Follow these steps EXACTLY. This is a strict checklist, not a guide.
 
-## Core Principles
+## RULES (Read First)
 
-1. **Work ONLY through subagents** - NEVER code in main thread
-2. **Commit after EACH agent** completes (no batching)
-3. **All logs/reports → files** under logs/, NOT conversation
-4. **Main thread: max 2 sentences** per agent launch
-5. **Max 3 files per coder agent** run (hard limit)
-6. **Mandatory tool usage rules** in every agent prompt
-7. **Upfront planning** via planner agent first
+1. **NEVER code in main thread** - All work through agents
+2. **NEVER read files in main thread** - Agents do all exploration
+3. **NEVER write logs in conversation** - All logs go to files
+4. **Main thread output: 2 sentences MAX** per step
+5. **Commit after EVERY agent** (no exceptions)
+6. **All agents use subagent_type="general-purpose"**
 
-## Execution Flow
+## EXECUTION CHECKLIST
 
-### Step 0: Launch Planner Agent (First, Always)
+### STEP 0: LAUNCH PLANNER AGENT (ALWAYS FIRST)
 
-Use the Task tool with subagent_type="Explore" and thoroughness="very thorough":
+**DO THIS:**
 
+1. Identify the plan file from user's request (e.g., "plans/slalom-plan.md")
+2. Read the planner template:
+   ```
+   Read tool: /home/user/slalom/.claude/skills/multi-agent-workflow/templates/planner.md
+   ```
+3. Replace `[plan-file]` in template with actual filename
+4. Launch agent:
+   ```
+   Task tool:
+     subagent_type: "general-purpose"
+     description: "Create detailed implementation plan"
+     prompt: [FULL contents of planner template with [plan-file] replaced]
+   ```
+5. After agent completes, output to user: "Plan written. Committing."
+6. Commit:
+   ```bash
+   git add plans/detailed-plan.md && git commit -m "Add detailed implementation plan for [feature]"
+   ```
+
+### STEP 1: READ THE DETAILED PLAN
+
+**DO THIS:**
+
+1. Read plans/detailed-plan.md to see all phases
+2. Count total phases
+3. Do NOT output plan contents to user
+
+### STEP 2: EXECUTE EACH PHASE
+
+**FOR EACH PHASE, DO THIS LOOP:**
+
+#### 2.1 LAUNCH CODER AGENT(S)
+
+**DO THIS:**
+
+1. Read the coder template:
+   ```
+   Read tool: /home/user/slalom/.claude/skills/multi-agent-workflow/templates/coder.md
+   ```
+2. Check how many files this phase/step requires
+3. If >3 files: Split into multiple coder runs (3 files max each)
+4. Replace `[N]` with phase number, `[X]` with step number in template
+5. Launch agent:
+   ```
+   Task tool:
+     subagent_type: "general-purpose"
+     description: "Implement phase N step X"
+     prompt: [FULL contents of coder template with [N] and [X] replaced]
+   ```
+6. Output to user: "Launching coder for phase N, step X (files: a.ts, b.ts, c.ts)."
+7. After agent completes, output: "Code committed."
+8. Commit:
+   ```bash
+   git add [files modified by agent] && git commit -m "Implement phase N step X"
+   ```
+9. If more files remain: Repeat 2.1 for remaining files
+
+#### 2.2 LAUNCH TESTER AGENT
+
+**DO THIS:**
+
+1. Read the tester template:
+   ```
+   Read tool: /home/user/slalom/.claude/skills/multi-agent-workflow/templates/tester.md
+   ```
+2. Replace `[N]` with phase number in template
+3. Launch agent:
+   ```
+   Task tool:
+     subagent_type: "general-purpose"
+     description: "Test phase N implementation"
+     prompt: [FULL contents of tester template with [N] replaced]
+   ```
+4. Output to user: "Launching tester for phase N."
+5. After agent completes, output: "Tests committed."
+6. Commit:
+   ```bash
+   git add logs/phase-N-tests.md tests/ && git commit -m "Add tests for phase N"
+   ```
+
+#### 2.3 LAUNCH REVIEWER AGENT
+
+**DO THIS:**
+
+1. Read the reviewer template:
+   ```
+   Read tool: /home/user/slalom/.claude/skills/multi-agent-workflow/templates/reviewer.md
+   ```
+2. Replace `[N]` with phase number in template
+3. Launch agent:
+   ```
+   Task tool:
+     subagent_type: "general-purpose"
+     description: "Review phase N implementation"
+     prompt: [FULL contents of reviewer template with [N] replaced]
+   ```
+4. Output to user: "Launching reviewer for phase N."
+5. After agent completes, output: "Review committed."
+6. Commit:
+   ```bash
+   git add logs/phase-N-review.md && git commit -m "Add review for phase N"
+   ```
+
+#### 2.4 FIX ISSUES (IF REVIEWER FOUND ANY)
+
+**DO THIS:**
+
+1. Read logs/phase-N-review.md to check for issues
+2. If CRITICAL or MAJOR issues found:
+   a. Read the coder template again
+   b. Modify template to say "Fix issues from logs/phase-N-review.md for phase N"
+   c. Launch agent:
+      ```
+      Task tool:
+        subagent_type: "general-purpose"
+        description: "Fix issues from phase N review"
+        prompt: [FULL contents of coder template modified for fixes]
+      ```
+   d. Output to user: "Launching coder to fix issues."
+   e. After agent completes, output: "Fixes committed."
+   f. Commit:
+      ```bash
+      git add [fixed files] && git commit -m "Fix issues from phase N review"
+      ```
+3. If no issues or only MINOR issues: Skip to next phase
+
+#### 2.5 MOVE TO NEXT PHASE
+
+**DO THIS:**
+
+1. Output to user: "Moving to phase N+1..."
+2. Go back to step 2.1 with next phase number
+3. If no more phases: Go to STEP 3
+
+### STEP 3: COMPLETION
+
+**DO THIS:**
+
+1. Create completion summary using Write tool:
+   ```
+   Write tool:
+     file_path: logs/completion-summary.md
+     content: [Brief summary of what was implemented, phases completed, any notes]
+   ```
+2. Commit:
+   ```bash
+   git add logs/completion-summary.md && git commit -m "Add completion summary"
+   ```
+3. Output to user: "All phases complete. Summary written to logs/completion-summary.md."
+4. STOP - Do NOT write lengthy explanation
+
+## TEMPLATE READING INSTRUCTIONS
+
+When instructions say "Read the X template", you MUST:
+
+1. Use Read tool on the template file path
+2. Store the FULL contents
+3. Replace any placeholders like [N], [X], [plan-file]
+4. Use the ENTIRE modified template as the agent prompt
+
+**WRONG:**
 ```
-Prompt: [Use ~/.claude/skills/multi-agent-workflow/templates/planner.md template]
-Description: "Create detailed implementation plan"
+Prompt: "Implement phase 1 using the coder template"
 ```
 
-After planner completes:
-- Commit plans/detailed-plan.md immediately
-- Main thread output: "Plan written. Committed."
-
-### Step 1-N: Execute Phases
-
-For each phase in the detailed plan:
-
-1. **Coder Agent(s)**:
-   - Launch with template from templates/coder.md
-   - Scope: Max 3 files per run
-   - If phase needs >3 files, launch multiple coder agents sequentially
-   - Commit after EACH run
-   - Main thread: "Launching coder for phase N, step X (files: a, b, c)."
-   - After: "Code committed."
-
-2. **Tester Agent**:
-   - Launch with template from templates/tester.md
-   - Output → logs/phase-N-tests.md
-   - Commit
-   - Main thread: "Tests committed."
-
-3. **Reviewer Agent**:
-   - Launch with template from templates/reviewer.md
-   - Output → logs/phase-N-review.md
-   - Commit
-   - Main thread: "Review committed."
-
-4. **Fix Issues** (if reviewer found problems):
-   - Launch coder agent again with fixes
-   - Commit
-   - Main thread: "Fixes committed."
-
-5. **Move to next phase**
-   - Main thread: "Moving to phase N+1..."
-
-### Final Step: Completion
-
-After all phases:
-- Main thread: "All phases complete. Summary written to logs/completion-summary.md."
-- Do NOT write lengthy summary in conversation
-
-## Agent Templates
-
-When launching agents, construct prompts using these templates:
-
-- **Planner**: ~/.claude/skills/multi-agent-workflow/templates/planner.md
-- **Coder**: ~/.claude/skills/multi-agent-workflow/templates/coder.md
-- **Tester**: ~/.claude/skills/multi-agent-workflow/templates/tester.md
-- **Reviewer**: ~/.claude/skills/multi-agent-workflow/templates/reviewer.md
-
-## Critical Rules
-
-### Tool Enforcement
-EVERY agent prompt MUST include:
+**CORRECT:**
 ```
-CRITICAL TOOL RULES:
-- Read files: Use Read tool, NOT cat/head/tail
-- Edit files: Use Edit tool, NOT sed/awk/vi
-- Write files: Use Write tool, NOT echo/>
-- Search code: Use Grep tool, NOT grep/rg/ag
-- Find files: Use Glob tool, NOT find/ls
-- Bash is ONLY for: git, npm, cargo, pytest, build commands
-Violating this wastes context and the run fails.
+Prompt: "# Coder Agent Template
+
+You are the coder agent for a multi-agent implementation workflow.
+
+## Your Task
+
+Implement Phase 1, Step 1 from plans/detailed-plan.md
+
+[... FULL template contents with [N]=1, [X]=1 ...]"
 ```
 
-### Context Safety
-- NO file reading in main thread "for overview"
-- NO exploration in main thread
-- NO lengthy explanations - just agent status
-- ALL substantive output goes to files under logs/
+## MAIN THREAD OUTPUT RULES
 
-### Commit Discipline
-```bash
-# After planner
-git add plans/detailed-plan.md && git commit -m "Add detailed implementation plan"
+**ALLOWED:**
+- "Launching planner agent."
+- "Plan written. Committed."
+- "Launching coder for phase 1, step 1 (files: foo.ts, bar.ts)."
+- "Code committed."
 
-# After each coder run
-git add [modified files] && git commit -m "Implement phase N step X"
+**FORBIDDEN:**
+- Explaining what the agent did
+- Showing code snippets
+- Summarizing agent output
+- Discussing architecture
+- Anything longer than 2 sentences
 
-# After tester
-git add logs/phase-N-tests.md [test files] && git commit -m "Add tests for phase N"
+## TROUBLESHOOTING
 
-# After reviewer
-git add logs/phase-N-review.md && git commit -m "Add review for phase N"
+If you catch yourself doing any of these, STOP immediately:
 
-# After fixes
-git add [fixed files] && git commit -m "Fix issues from phase N review"
-```
+- [ ] Reading files in main thread → Launch agent instead
+- [ ] Writing code in main thread → Launch coder agent
+- [ ] Exploring codebase in main thread → Planner already did this
+- [ ] Writing >2 sentences per step → Delete and write 1 sentence
+- [ ] Not committing after agent → Go back and commit
+- [ ] Using cat/grep in agents → Remind agents to use Read/Grep tools
 
-## Detecting the Plan
+## DETECTION
 
-The user will typically say:
+User phrases that trigger this workflow:
 - "Implement the plan in plans/[file].md"
-- "Use multi-agent workflow for [task]"
-- "Follow the workflow to implement [feature]"
+- "Use multi-agent workflow"
+- "Follow the workflow to implement"
 
-When you see this, immediately launch the planner agent first.
+When you see these: Start at STEP 0 immediately.
 
-## Main Thread Example
+## CRITICAL REMINDERS
 
-```
-User: "Implement the plan in plans/slalom-plan.md"
-Assistant: Launching planner agent.
-[planner runs]
-Assistant: Plan written. Committed.
-Assistant: Launching coder for phase 1, step 1 (files: src/foo.ts, src/bar.ts).
-[coder runs]
-Assistant: Code committed. Launching tester for phase 1.
-[tester runs]
-Assistant: Tests committed. Launching reviewer for phase 1.
-[reviewer runs]
-Assistant: Review committed. Launching coder to fix 2 issues.
-[coder runs]
-Assistant: Fixes committed. Moving to phase 2...
-[repeat]
-Assistant: All phases complete. Summary written to logs/completion-summary.md.
-```
-
-Notice: Ultra-brief updates only. No explanations, no code snippets, no summaries in conversation.
-
-## Troubleshooting
-
-If you find yourself:
-- Reading files in main thread → STOP, use agents instead
-- Writing code directly → STOP, launch coder agent
-- Explaining agent results → STOP, just say status
-- Using cat/grep in bash → STOP, remind yourself to use proper tools in agent prompts
-
-The workflow is strict by design. Follow it exactly to prevent context exhaustion.
+- Every agent gets subagent_type="general-purpose"
+- Every agent prompt = FULL template contents (not a reference)
+- Commit after EVERY agent (planner, coder, tester, reviewer, fixer)
+- Main thread stays under 2 sentences per agent
+- All logs go to files, never conversation
+- Coder agents: 3 files max per run
