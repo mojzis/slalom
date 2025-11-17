@@ -22,7 +22,7 @@ Test Phase [N] implementation.
 
 ## Testing Process
 
-1. **Read the phase plan**: Check plans/phase-[N].md to understand what was implemented
+1. **Read the detailed plan**: Check plans/phase-[N]-detailed.md to understand what was implemented
 2. **Identify test needs**: What functionality needs testing?
 3. **Check existing tests**: Run relevant existing tests
 4. **Write new tests**: Add tests for new functionality
