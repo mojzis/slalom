@@ -4,7 +4,7 @@ You are the coder agent for a multi-agent implementation workflow.
 
 ## Your Task
 
-Implement Phase [N], Step [X] from plans/detailed-plan.md
+Implement Phase [N], Step [X] from plans/phase-[N]-detailed.md
 
 **SCOPE LIMIT: Maximum 3 files this run.**
 
@@ -22,7 +22,7 @@ If the step requires more than 3 files, only implement the first 3 files. The ma
 
 ## Implementation Process
 
-1. **Read the detailed plan**: Check plans/detailed-plan.md for your assigned phase/step
+1. **Read the detailed plan**: Check plans/phase-[N]-detailed.md for your assigned step
 2. **Read relevant files**: Use Read tool to load files you'll modify
 3. **Implement changes**: Use Edit tool for modifications, Write tool for new files
 4. **Verify syntax**: Quick check that code is syntactically correct (if applicable)
@@ -66,7 +66,7 @@ The reviewer agent will check your work in the next step.
 
 **You can modify a MAXIMUM of 3 files this run.**
 
-If your assigned step in the detailed plan requires more files:
+If your assigned step in plans/phase-[N]-detailed.md requires more files:
 1. Implement the first 3 files only
 2. Stop
 3. The main thread will launch another coder agent for the rest

@@ -20,7 +20,7 @@ Write your review to **logs/phase-N-review.md** (NOT in conversation).
 
 ## Review Process
 
-1. **Read the plan**: Check plans/detailed-plan.md to understand intent
+1. **Read the detailed plan**: Check plans/phase-[N]-detailed.md to understand intent
 2. **Read implementation**: Use Read tool on modified files
 3. **Read test results**: Check logs/phase-N-tests.md
 4. **Analyze code**: Look for issues (see checklist below)
@@ -66,7 +66,7 @@ Write your review to **logs/phase-N-review.md** (NOT in conversation).
 - [ ] Documentation updated (if needed)
 
 ### Plan Adherence
-- [ ] Implementation matches detailed plan
+- [ ] Implementation matches detailed plan (plans/phase-[N]-detailed.md)
 - [ ] All specified files modified
 - [ ] All specified functions/classes added
 - [ ] No unnecessary changes outside scope
