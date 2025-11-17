@@ -36,16 +36,27 @@ You are now executing a structured multi-agent workflow. Follow these steps EXAC
    git add plans/detailed-plan.md && git commit -m "Add detailed implementation plan for [feature]"
    ```
 
-### STEP 1: READ THE DETAILED PLAN (MAIN THREAD ONLY)
+### STEP 1: SPLIT PLAN INTO PHASE FILES (MAIN THREAD ONLY)
 
 **DO THIS:**
 
-1. Read plans/detailed-plan.md to see all phases
-2. Count total phases
-3. Extract each phase into separate variables/memory
-4. Do NOT output plan contents to user
+1. Read plans/detailed-plan.md
+2. Identify all phases (usually marked with ## Phase 1, ## Phase 2, etc.)
+3. For each phase N, create a separate file:
+   ```
+   Write tool:
+     file_path: plans/phase-N.md
+     content: [ONLY Phase N section from detailed-plan.md]
+   ```
+4. Count total phases
+5. Commit all phase files:
+   ```bash
+   git add plans/phase-*.md && git commit -m "Split detailed plan into phase files"
+   ```
+6. Output to user: "Plan split into N phases. Committed."
+7. Do NOT output plan contents to user
 
-**IMPORTANT:** Agents will NOT see the full plan. You will extract and give each agent ONLY their phase.
+**IMPORTANT:** Agents will read ONLY their specific plans/phase-N.md file, not the full detailed-plan.md.
 
 ### STEP 2: EXECUTE EACH PHASE
 
@@ -59,27 +70,26 @@ You are now executing a structured multi-agent workflow. Follow these steps EXAC
    ```
    Read tool: /home/user/slalom/.claude/skills/multi-agent-workflow/templates/coder.md
    ```
-2. Extract ONLY Phase N section from detailed-plan.md (that you read in STEP 1)
-3. Check how many files this phase/step requires
-4. If >3 files: Split into multiple coder runs (3 files max each)
-5. Replace `[N]` with phase number, `[X]` with step number in template
-6. **CRITICAL:** Replace "from plans/detailed-plan.md" with the actual Phase N content (inline)
-7. Launch agent:
+2. Replace `[N]` with phase number, `[X]` with step number in template
+3. **CRITICAL:** In template, change "plans/detailed-plan.md" to "plans/phase-N.md"
+4. Check how many files this phase requires (look at plans/phase-N.md if needed)
+5. If >3 files: Split into multiple coder runs (3 files max each)
+6. Launch agent:
    ```
    Task tool:
      subagent_type: "general-purpose"
      description: "Implement phase N step X"
-     prompt: [FULL coder template + ONLY Phase N section inline, NO reference to detailed-plan.md]
+     prompt: [FULL coder template with plans/phase-N.md reference]
    ```
-8. Output to user: "Launching coder for phase N, step X (files: a.ts, b.ts, c.ts)."
-9. After agent completes, output: "Code committed."
-10. Commit:
+7. Output to user: "Launching coder for phase N, step X (files: a.ts, b.ts, c.ts)."
+8. After agent completes, output: "Code committed."
+9. Commit:
    ```bash
    git add [files modified by agent] && git commit -m "Implement phase N step X"
    ```
-11. If more files remain: Repeat 2.1 for remaining files
+10. If more files remain: Repeat 2.1 for remaining files
 
-**WHY:** Agent sees ONLY their phase, not entire plan. Saves context.
+**WHY:** Agent reads ONLY plans/phase-N.md, not entire detailed-plan.md. Saves context.
 
 #### 2.2 LAUNCH TESTER AGENT
 
@@ -89,24 +99,23 @@ You are now executing a structured multi-agent workflow. Follow these steps EXAC
    ```
    Read tool: /home/user/slalom/.claude/skills/multi-agent-workflow/templates/tester.md
    ```
-2. Extract ONLY Phase N section from detailed-plan.md (that you read in STEP 1)
-3. Replace `[N]` with phase number in template
-4. **CRITICAL:** Replace "from plans/detailed-plan.md" with the actual Phase N content (inline)
-5. Launch agent:
+2. Replace `[N]` with phase number in template
+3. **CRITICAL:** In template, change "plans/detailed-plan.md" to "plans/phase-N.md"
+4. Launch agent:
    ```
    Task tool:
      subagent_type: "general-purpose"
      description: "Test phase N implementation"
-     prompt: [FULL tester template + ONLY Phase N section inline, NO reference to detailed-plan.md]
+     prompt: [FULL tester template with plans/phase-N.md reference]
    ```
-6. Output to user: "Launching tester for phase N."
-7. After agent completes, output: "Tests committed."
-8. Commit:
+5. Output to user: "Launching tester for phase N."
+6. After agent completes, output: "Tests committed."
+7. Commit:
    ```bash
    git add logs/phase-N-tests.md tests/ && git commit -m "Add tests for phase N"
    ```
 
-**WHY:** Agent sees ONLY their phase, not entire plan. Saves context.
+**WHY:** Agent reads ONLY plans/phase-N.md, not entire detailed-plan.md. Saves context.
 
 #### 2.3 LAUNCH REVIEWER AGENT
 
@@ -116,24 +125,23 @@ You are now executing a structured multi-agent workflow. Follow these steps EXAC
    ```
    Read tool: /home/user/slalom/.claude/skills/multi-agent-workflow/templates/reviewer.md
    ```
-2. Extract ONLY Phase N section from detailed-plan.md (that you read in STEP 1)
-3. Replace `[N]` with phase number in template
-4. **CRITICAL:** Replace "from plans/detailed-plan.md" with the actual Phase N content (inline)
-5. Launch agent:
+2. Replace `[N]` with phase number in template
+3. **CRITICAL:** In template, change "plans/detailed-plan.md" to "plans/phase-N.md"
+4. Launch agent:
    ```
    Task tool:
      subagent_type: "general-purpose"
      description: "Review phase N implementation"
-     prompt: [FULL reviewer template + ONLY Phase N section inline, NO reference to detailed-plan.md]
+     prompt: [FULL reviewer template with plans/phase-N.md reference]
    ```
-6. Output to user: "Launching reviewer for phase N."
-7. After agent completes, output: "Review committed."
-8. Commit:
+5. Output to user: "Launching reviewer for phase N."
+6. After agent completes, output: "Review committed."
+7. Commit:
    ```bash
    git add logs/phase-N-review.md && git commit -m "Add review for phase N"
    ```
 
-**WHY:** Agent sees ONLY their phase, not entire plan. Saves context.
+**WHY:** Agent reads ONLY plans/phase-N.md, not entire detailed-plan.md. Saves context.
 
 #### 2.4 FIX ISSUES (IF REVIEWER FOUND ANY)
 
@@ -142,25 +150,24 @@ You are now executing a structured multi-agent workflow. Follow these steps EXAC
 1. Read logs/phase-N-review.md to check for issues
 2. If CRITICAL or MAJOR issues found:
    a. Read the coder template again
-   b. Extract ONLY Phase N section from detailed-plan.md (that you read in STEP 1)
-   c. Modify template to say "Fix issues from logs/phase-N-review.md for phase N"
-   d. **CRITICAL:** Include Phase N content inline, plus the review content inline
-   e. Launch agent:
+   b. Modify template to say "Fix issues from logs/phase-N-review.md for phase N"
+   c. **CRITICAL:** In template, change "plans/detailed-plan.md" to "plans/phase-N.md"
+   d. Launch agent:
       ```
       Task tool:
         subagent_type: "general-purpose"
         description: "Fix issues from phase N review"
-        prompt: [FULL coder template + Phase N section inline + review issues inline]
+        prompt: [FULL coder template with plans/phase-N.md and logs/phase-N-review.md references]
       ```
-   f. Output to user: "Launching coder to fix issues."
-   g. After agent completes, output: "Fixes committed."
-   h. Commit:
+   e. Output to user: "Launching coder to fix issues."
+   f. After agent completes, output: "Fixes committed."
+   g. Commit:
       ```bash
       git add [fixed files] && git commit -m "Fix issues from phase N review"
       ```
 3. If no issues or only MINOR issues: Skip to next phase
 
-**WHY:** Agent sees ONLY their phase and specific issues, not entire plan/review. Saves context.
+**WHY:** Agent reads ONLY plans/phase-N.md and logs/phase-N-review.md, not entire plan. Saves context.
 
 #### 2.5 MOVE TO NEXT PHASE
 
