@@ -64,7 +64,7 @@ export default class Sign extends Phaser.GameObjects.Container {
     }
   }
 
-  checkVisibility(cameraY: number, playerY: number): void {
+  checkVisibility(_cameraY: number, playerY: number): void {
     const distanceToObstacle = playerY - this.relatedObstacleY;
 
     // Show sign 600px before obstacle

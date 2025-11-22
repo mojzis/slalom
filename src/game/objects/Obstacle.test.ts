@@ -3,26 +3,6 @@ import Obstacle from './Obstacle';
 
 // Mock Phaser
 vi.mock('phaser', () => {
-  const mockGraphics = {
-    clear: vi.fn().mockReturnThis(),
-    lineStyle: vi.fn().mockReturnThis(),
-    fillStyle: vi.fn().mockReturnThis(),
-    strokeCircle: vi.fn().mockReturnThis(),
-    fillCircle: vi.fn().mockReturnThis(),
-    beginPath: vi.fn().mockReturnThis(),
-    moveTo: vi.fn().mockReturnThis(),
-    lineTo: vi.fn().mockReturnThis(),
-    closePath: vi.fn().mockReturnThis(),
-    strokePath: vi.fn().mockReturnThis(),
-    fillPath: vi.fn().mockReturnThis(),
-    fillRect: vi.fn().mockReturnThis(),
-    strokeRect: vi.fn().mockReturnThis(),
-    setPosition: vi.fn().mockReturnThis(),
-    destroy: vi.fn(),
-    x: 0,
-    y: 0,
-  };
-
   class MockGraphics {
     clear = vi.fn().mockReturnThis();
     lineStyle = vi.fn().mockReturnThis();

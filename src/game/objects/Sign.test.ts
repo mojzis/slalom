@@ -83,7 +83,7 @@ describe('Sign', () => {
     });
 
     it('creates background and text elements', () => {
-      const sign = new Sign(mockScene, 400, 200, 'ROCK', 500);
+      new Sign(mockScene, 400, 200, 'ROCK', 500);
 
       expect(mockScene.add.graphics).toHaveBeenCalled();
       expect(mockScene.add.text).toHaveBeenCalledWith(
@@ -96,7 +96,7 @@ describe('Sign', () => {
     });
 
     it('adds sign to scene', () => {
-      const sign = new Sign(mockScene, 400, 200, 'LEFT', 500);
+      new Sign(mockScene, 400, 200, 'LEFT', 500);
       expect(mockScene.add.existing).toHaveBeenCalled();
     });
   });
