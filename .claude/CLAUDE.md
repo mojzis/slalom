@@ -40,6 +40,12 @@ Standard conversation-based development is fine for:
 5. Check `logs/` for test results and reviews
 6. Final summary in `logs/completion-summary.md`
 
+## Testing Requirements
+
+- All new features **must** have tests
+- Tests **must** pass before the feature is considered complete
+- If you're at risk of losing work, it's acceptable to push first with failing tests, but then immediately fix the tests and push again with green tests
+
 ## Technology Stack
 
 [To be filled in based on your project choices]
