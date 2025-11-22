@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import Player from '../objects/Player';
 import { calculateLanePositions, drawLaneGuides } from '../objects/Lane';
+import ObstacleManager from '../managers/ObstacleManager';
 
 export default class MainScene extends Phaser.Scene {
   private scrollSpeed: number = 2;
@@ -8,6 +9,8 @@ export default class MainScene extends Phaser.Scene {
   private player!: Player;
   private laneGraphics!: Phaser.GameObjects.Graphics;
   private playerScreenY: number = 500;
+  private obstacleManager!: ObstacleManager;
+  private isGameOver: boolean = false;
 
   constructor() {
     super({ key: 'MainScene' });
@@ -15,6 +18,7 @@ export default class MainScene extends Phaser.Scene {
 
   init(): void {
     this.scrollSpeed = 2;
+    this.isGameOver = false;
   }
 
   preload(): void {
@@ -48,6 +52,9 @@ export default class MainScene extends Phaser.Scene {
 
     // Set up keyboard input for lane switching
     this.setupInput();
+
+    // Initialize obstacle manager
+    this.obstacleManager = new ObstacleManager(this, this.lanePositions);
   }
 
   private setupInput(): void {
@@ -65,6 +72,9 @@ export default class MainScene extends Phaser.Scene {
   }
 
   update(_time: number, _delta: number): void {
+    // Don't update if game is over
+    if (this.isGameOver) return;
+
     // Auto-scroll camera upward (increase scrollY)
     this.cameras.main.scrollY += this.scrollSpeed;
 
@@ -79,5 +89,26 @@ export default class MainScene extends Phaser.Scene {
       this.cameras.main.scrollY,
       600
     );
+
+    // Update obstacle manager
+    this.obstacleManager.update(this.cameras.main.scrollY, this.player.y);
+
+    // Check for collisions
+    if (this.obstacleManager.checkCollisions(this.player)) {
+      this.handleCrash();
+    }
+  }
+
+  private handleCrash(): void {
+    this.isGameOver = true;
+    this.player.crash();
+
+    // Calculate distance traveled (scrollY / pixels per meter)
+    const distance = this.cameras.main.scrollY / 2;
+
+    // Transition to game over scene after animation
+    this.time.delayedCall(1000, () => {
+      this.scene.start('GameOverScene', { distance });
+    });
   }
 }
