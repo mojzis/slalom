@@ -1,6 +1,38 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ObstacleManager from './ObstacleManager';
 
+// Mock Sign module
+vi.mock('../objects/Sign', () => ({
+  default: class MockSign {
+    word: string;
+    relatedObstacleY: number;
+    hasBeenSeen = false;
+    constructor(_scene: any, _x: number, _y: number, word: string, obstacleY: number) {
+      this.word = word;
+      this.relatedObstacleY = obstacleY;
+    }
+    checkVisibility = vi.fn();
+    fadeIn = vi.fn();
+    fadeOut = vi.fn();
+    destroy = vi.fn();
+  },
+}));
+
+// Mock WordManager module
+vi.mock('./WordManager', () => ({
+  default: class MockWordManager {
+    recentWords: string[] = [];
+    generatePair = vi.fn().mockImplementation((type, lane, obstacleY) => ({
+      word: 'ROCK',
+      obstacleType: type,
+      lane,
+      obstacleY,
+      signY: obstacleY + 300,
+    }));
+    reset = vi.fn();
+  },
+}));
+
 // Mock Phaser Math and Utils
 vi.mock('phaser', () => ({
   default: {
@@ -69,7 +101,7 @@ describe('ObstacleManager', () => {
     it('spawns obstacles when camera scrolls', () => {
       const manager = new ObstacleManager(mockScene as any, lanePositions);
 
-      manager.update(0);
+      manager.update(0, 500);
 
       expect(manager.obstacles.length).toBe(1);
     });
@@ -77,8 +109,8 @@ describe('ObstacleManager', () => {
     it('does not spawn obstacles too frequently', () => {
       const manager = new ObstacleManager(mockScene as any, lanePositions);
 
-      manager.update(0);
-      manager.update(50); // Only 50px scroll, shouldn't spawn
+      manager.update(0, 500);
+      manager.update(50, 550); // Only 50px scroll, shouldn't spawn
 
       expect(manager.obstacles.length).toBe(1);
     });
@@ -86,10 +118,18 @@ describe('ObstacleManager', () => {
     it('spawns new obstacle after scrolling minSpawnInterval', () => {
       const manager = new ObstacleManager(mockScene as any, lanePositions);
 
-      manager.update(0);
-      manager.update(300); // 300px scroll, should spawn
+      manager.update(0, 500);
+      manager.update(300, 800); // 300px scroll, should spawn
 
       expect(manager.obstacles.length).toBe(2);
+    });
+
+    it('spawns signs along with obstacles', () => {
+      const manager = new ObstacleManager(mockScene as any, lanePositions);
+
+      manager.update(0, 500);
+
+      expect(manager.signs.length).toBe(1);
     });
   });
 
@@ -128,13 +168,15 @@ describe('ObstacleManager', () => {
     it('clears all obstacles and resets state', () => {
       const manager = new ObstacleManager(mockScene as any, lanePositions);
 
-      manager.update(0);
-      manager.update(300);
+      manager.update(0, 500);
+      manager.update(300, 800);
       expect(manager.obstacles.length).toBe(2);
+      expect(manager.signs.length).toBe(2);
 
       manager.reset();
 
       expect(manager.obstacles.length).toBe(0);
+      expect(manager.signs.length).toBe(0);
       expect(manager.lastSpawnY).toBe(0);
     });
   });

@@ -91,7 +91,7 @@ export default class MainScene extends Phaser.Scene {
     );
 
     // Update obstacle manager
-    this.obstacleManager.update(this.cameras.main.scrollY);
+    this.obstacleManager.update(this.cameras.main.scrollY, this.player.y);
 
     // Check for collisions
     if (this.obstacleManager.checkCollisions(this.player)) {
