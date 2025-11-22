@@ -101,7 +101,14 @@ export default class MainScene extends Phaser.Scene {
 
   private handleCrash(): void {
     this.isGameOver = true;
-    // For now, just stop the game - full crash handling in Phase 7
-    console.log('Crash! Game Over');
+    this.player.crash();
+
+    // Calculate distance traveled (scrollY / pixels per meter)
+    const distance = this.cameras.main.scrollY / 2;
+
+    // Transition to game over scene after animation
+    this.time.delayedCall(1000, () => {
+      this.scene.start('GameOverScene', { distance });
+    });
   }
 }
