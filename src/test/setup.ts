@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
+import { createElement } from 'react'
 
-// Mock Phaser to avoid canvas issues in jsdom
-vi.mock('phaser', () => ({
-  default: {},
-  Game: vi.fn(),
-  Scene: vi.fn(),
-  AUTO: 'AUTO',
+// Mock PhaserGame component to avoid canvas/WebGL issues in jsdom
+vi.mock('../components/PhaserGame', () => ({
+  default: () => createElement('div', { 'data-testid': 'phaser-game-mock' }, 'Game Canvas'),
+  getGameInstance: () => null,
 }))

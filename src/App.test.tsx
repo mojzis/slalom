@@ -8,9 +8,9 @@ describe('App', () => {
     expect(screen.getByText('Word Reader Downhill')).toBeInTheDocument()
   })
 
-  it('renders the initializing message', () => {
+  it('renders the game container', () => {
     render(<App />)
-    expect(screen.getByText('Game initializing...')).toBeInTheDocument()
+    expect(screen.getByTestId('phaser-game-mock')).toBeInTheDocument()
   })
 
   it('renders the app container', () => {
