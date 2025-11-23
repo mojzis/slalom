@@ -72,8 +72,9 @@ export default class Sign extends Phaser.GameObjects.Container {
     // Distance is positive when obstacle is above player (ahead)
     const distanceToObstacle = playerY - this.relatedObstacleY;
 
-    // Show sign when obstacle is 100-600px above player (approaching)
-    if (distanceToObstacle > 100 && distanceToObstacle < 600 && !this.hasBeenSeen) {
+    // Show sign when obstacle is 100-800px above player (approaching)
+    // Note: obstacles spawn ~680px ahead of player (spawnDistance=200 + playerScreenY=480)
+    if (distanceToObstacle > 100 && distanceToObstacle < 800 && !this.hasBeenSeen) {
       this.fadeIn();
       this.hasBeenSeen = true;
     }
