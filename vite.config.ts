@@ -9,6 +9,19 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  build: {
+    // Ensure all assets get content hashes for cache busting
+    rollupOptions: {
+      output: {
+        // Include content hash in entry file names
+        entryFileNames: 'assets/[name]-[hash].js',
+        // Include content hash in chunk file names
+        chunkFileNames: 'assets/[name]-[hash].js',
+        // Include content hash in asset file names (CSS, images, etc.)
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
