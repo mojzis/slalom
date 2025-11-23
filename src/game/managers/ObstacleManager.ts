@@ -23,7 +23,7 @@ export default class ObstacleManager {
     this.spawnDistance = 200; // Spawn 200px below viewport
     this.lastSpawnY = 0;
     this.lanePositions = lanePositions;
-    this.minSpawnInterval = 200; // Minimum 200px between obstacles
+    this.minSpawnInterval = 350; // Minimum 350px between obstacles for better reaction time
     this.wordManager = new WordManager();
     this.currentTier = DifficultyTier.BEGINNER;
   }
