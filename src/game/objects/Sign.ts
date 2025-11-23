@@ -20,14 +20,12 @@ export default class Sign extends Phaser.GameObjects.Container {
     this.relatedObstacleY = obstacleY;
     this.hasBeenSeen = false;
 
-    // Determine sign color based on word type
-    const hazardWords = ['TREE', 'ROCK', 'GAP', 'BRANCH', 'ICE', 'CLIFF', 'LOG', 'MUD'];
-    const isHazard = hazardWords.includes(word);
-    const bgColor = isHazard ? 0xF4C8B8 : 0xB8D4E8; // Peach for hazards, blue for actions
+    // Use unified sign color - no color coding to ensure players read the text
+    const bgColor = 0xF5F0E8; // Warm cream/off-white for all signs
 
     // Create background with refined styling
     this.signBackground = scene.add.graphics();
-    this.signBackground.fillStyle(bgColor, 0.9);
+    this.signBackground.fillStyle(bgColor, 0.92);
     this.signBackground.fillRoundedRect(-90, -32, 180, 64, 12);
     this.signBackground.lineStyle(1.5, 0x4A5568, 1);
     this.signBackground.strokeRoundedRect(-90, -32, 180, 64, 12);

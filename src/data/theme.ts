@@ -6,8 +6,7 @@ export const COLORS = {
   PLAYER: '#8FA9B8',
   TREE: '#B8C4B8',
   ROCK: '#C9B8AD',
-  WARNING_SIGN: '#F4C8B8',
-  ACTION_SIGN: '#B8D4E8',
+  SIGN: '#F5F0E8',  // Unified sign color - no color coding to encourage reading
   TEXT_PRIMARY: '#4A5568',
   TEXT_SECONDARY: '#6B7280',
   HIGHLIGHT: '#E8C4A8'
