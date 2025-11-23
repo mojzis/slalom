@@ -32,11 +32,35 @@ export default class GameOverScene extends Phaser.Scene {
       color: '#6B7280'
     }).setOrigin(0.5);
 
+    // High score
+    const highScore = this.loadHighScore();
+    const isNewRecord = this.finalDistance >= highScore;
+    if (isNewRecord) {
+      this.add.text(centerX, centerY + 50, 'NEW RECORD!', {
+        fontFamily: 'Quicksand, sans-serif',
+        fontSize: '24px',
+        color: '#F4C8B8'
+      }).setOrigin(0.5);
+    } else {
+      this.add.text(centerX, centerY + 50, `Best: ${highScore}m`, {
+        fontFamily: 'Quicksand, sans-serif',
+        fontSize: '20px',
+        color: '#8FA9B8'
+      }).setOrigin(0.5);
+    }
+
     // Restart instruction
-    const restartText = this.add.text(centerX, centerY + 100, 'Press ENTER to restart', {
+    const restartText = this.add.text(centerX, centerY + 120, 'Press ENTER to restart', {
       fontFamily: 'Quicksand, sans-serif',
       fontSize: '24px',
       color: '#8FA9B8'
+    }).setOrigin(0.5);
+
+    // Menu instruction
+    this.add.text(centerX, centerY + 160, 'Press M for menu', {
+      fontFamily: 'Quicksand, sans-serif',
+      fontSize: '18px',
+      color: '#A0AEC0'
     }).setOrigin(0.5);
 
     // Pulse animation
@@ -57,5 +81,19 @@ export default class GameOverScene extends Phaser.Scene {
     this.input.keyboard?.once('keydown-SPACE', () => {
       this.scene.start('MainScene');
     });
+
+    // M key returns to menu
+    this.input.keyboard?.once('keydown-M', () => {
+      this.scene.start('MenuScene');
+    });
+  }
+
+  private loadHighScore(): number {
+    try {
+      const saved = localStorage.getItem('highScore');
+      return saved ? parseInt(saved, 10) : 0;
+    } catch {
+      return 0;
+    }
   }
 }

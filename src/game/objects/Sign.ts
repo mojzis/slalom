@@ -20,24 +20,30 @@ export default class Sign extends Phaser.GameObjects.Container {
     this.relatedObstacleY = obstacleY;
     this.hasBeenSeen = false;
 
-    // Create background
-    this.signBackground = scene.add.graphics();
-    this.signBackground.fillStyle(0xF4C8B8, 0.8);
-    this.signBackground.fillRoundedRect(-80, -30, 160, 60, 10);
-    this.signBackground.lineStyle(2, 0x4A5568, 1);
-    this.signBackground.strokeRoundedRect(-80, -30, 160, 60, 10);
+    // Determine sign color based on word type
+    const hazardWords = ['TREE', 'ROCK', 'GAP', 'BRANCH', 'ICE', 'CLIFF', 'LOG', 'MUD'];
+    const isHazard = hazardWords.includes(word);
+    const bgColor = isHazard ? 0xF4C8B8 : 0xB8D4E8; // Peach for hazards, blue for actions
 
-    // Create text
+    // Create background with refined styling
+    this.signBackground = scene.add.graphics();
+    this.signBackground.fillStyle(bgColor, 0.9);
+    this.signBackground.fillRoundedRect(-90, -32, 180, 64, 12);
+    this.signBackground.lineStyle(1.5, 0x4A5568, 1);
+    this.signBackground.strokeRoundedRect(-90, -32, 180, 64, 12);
+
+    // Create text with larger, more readable font
     this.signText = scene.add.text(0, 0, word, {
       fontFamily: 'Quicksand, sans-serif',
-      fontSize: '32px',
+      fontSize: '40px',
       color: '#4A5568',
-      fontStyle: 'bold'
+      fontStyle: '600'
     });
     this.signText.setOrigin(0.5, 0.5);
 
     this.add([this.signBackground, this.signText]);
     this.setAlpha(0);
+    this.setDepth(20); // Signs above obstacles, below player
 
     scene.add.existing(this);
   }

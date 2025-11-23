@@ -116,7 +116,7 @@ describe('GameOverScene', () => {
       scene.create();
 
       expect(mockAdd.text).toHaveBeenCalledWith(
-        400, 400, 'Press ENTER to restart',
+        400, 420, 'Press ENTER to restart',
         expect.objectContaining({
           fontSize: '24px',
         })
