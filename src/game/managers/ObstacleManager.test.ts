@@ -120,7 +120,7 @@ describe('ObstacleManager', () => {
       const manager = new ObstacleManager(mockScene as any, lanePositions);
 
       manager.update(0, 500);
-      manager.update(300, 800); // 300px scroll, should spawn
+      manager.update(400, 900); // 400px scroll, should spawn (minSpawnInterval is 350px)
 
       expect(manager.obstacles.length).toBe(2);
     });
@@ -170,7 +170,7 @@ describe('ObstacleManager', () => {
       const manager = new ObstacleManager(mockScene as any, lanePositions);
 
       manager.update(0, 500);
-      manager.update(300, 800);
+      manager.update(400, 900); // 400px scroll to trigger second spawn (minSpawnInterval is 350px)
       expect(manager.obstacles.length).toBe(2);
       expect(manager.signs.length).toBe(2);
 
