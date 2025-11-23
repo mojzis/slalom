@@ -71,16 +71,17 @@ export default class Sign extends Phaser.GameObjects.Container {
   }
 
   checkVisibility(_cameraY: number, playerY: number): void {
+    // Distance is positive when obstacle is above player (ahead)
     const distanceToObstacle = playerY - this.relatedObstacleY;
 
-    // Show sign 600px before obstacle
-    if (distanceToObstacle > -600 && distanceToObstacle < -100 && !this.hasBeenSeen) {
+    // Show sign when obstacle is 100-600px above player (approaching)
+    if (distanceToObstacle > 100 && distanceToObstacle < 600 && !this.hasBeenSeen) {
       this.fadeIn();
       this.hasBeenSeen = true;
     }
 
-    // Hide sign after passing
-    if (distanceToObstacle > 0 && this.alpha > 0) {
+    // Hide sign after obstacle has passed below player
+    if (distanceToObstacle < 0 && this.alpha > 0) {
       this.fadeOut();
     }
   }

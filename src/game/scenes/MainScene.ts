@@ -11,7 +11,7 @@ export default class MainScene extends Phaser.Scene {
   private lanePositions: number[] = [];
   private player!: Player;
   private laneGraphics!: Phaser.GameObjects.Graphics;
-  private playerScreenY: number = 380;
+  private playerScreenY: number = 480;
   private obstacleManager!: ObstacleManager;
   private scoreManager!: ScoreManager;
   private difficultyManager!: DifficultyManager;
