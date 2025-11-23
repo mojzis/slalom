@@ -74,12 +74,12 @@ describe('WordManager', () => {
       expect(pair.obstacleType).toBe('rock');
       expect(pair.lane).toBe(1);
       expect(pair.obstacleY).toBe(200);
-      expect(pair.signY).toBe(500); // 200 + 300
+      expect(pair.signY).toBe(-200); // 200 - 400
     });
 
     it('calculates correct signY position', () => {
       const pair = wordManager.generatePair('tree', 0, 500);
-      expect(pair.signY).toBe(800); // 500 + 300
+      expect(pair.signY).toBe(100); // 500 - 400
     });
   });
 

@@ -92,7 +92,7 @@ describe('ObstacleManager', () => {
       const manager = new ObstacleManager(mockScene as any, lanePositions);
 
       expect(manager.obstacles).toEqual([]);
-      expect(manager.spawnDistance).toBe(400);
+      expect(manager.spawnDistance).toBe(200);
       expect(manager.lastSpawnY).toBe(0);
       expect(manager.lanePositions).toEqual(lanePositions);
     });

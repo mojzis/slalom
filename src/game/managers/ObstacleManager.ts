@@ -20,7 +20,7 @@ export default class ObstacleManager {
     this.scene = scene;
     this.obstacles = [];
     this.signs = [];
-    this.spawnDistance = 400; // Spawn 400px ahead of camera
+    this.spawnDistance = 200; // Spawn 200px below viewport
     this.lastSpawnY = 0;
     this.lanePositions = lanePositions;
     this.minSpawnInterval = 200; // Minimum 200px between obstacles
@@ -29,18 +29,18 @@ export default class ObstacleManager {
   }
 
   update(cameraY: number, playerY: number): void {
-    const spawnY = cameraY - this.spawnDistance;
+    // Spawn obstacles ahead of camera (below viewport, will scroll into view)
+    const spawnY = cameraY + 600 + this.spawnDistance;
 
     // Spawn new obstacles if camera has scrolled far enough
-    // As camera scrolls (cameraY increases), spawnY increases, so we check spawnY - lastSpawnY
-    if (spawnY - this.lastSpawnY > this.minSpawnInterval || this.lastSpawnY === 0) {
+    if (this.lastSpawnY === 0 || spawnY - this.lastSpawnY > this.minSpawnInterval) {
       this.spawnObstacle(spawnY);
       this.lastSpawnY = spawnY;
     }
 
-    // Remove obstacles that are off-screen (behind camera)
+    // Remove obstacles that have scrolled past (above camera viewport)
     this.obstacles = this.obstacles.filter(obstacle => {
-      if (obstacle.yPosition > cameraY + 700) {
+      if (obstacle.yPosition < cameraY - 100) {
         obstacle.destroy();
         return false;
       }
@@ -52,9 +52,9 @@ export default class ObstacleManager {
       sign.checkVisibility(cameraY, playerY);
     });
 
-    // Remove signs that are off-screen
+    // Remove signs that have scrolled past (above camera viewport)
     this.signs = this.signs.filter(sign => {
-      if (sign.relatedObstacleY > cameraY + 700) {
+      if (sign.relatedObstacleY < cameraY - 100) {
         sign.destroy();
         return false;
       }
