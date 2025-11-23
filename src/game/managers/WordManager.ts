@@ -76,7 +76,9 @@ export default class WordManager {
     obstacleY: number
   ): SignObstaclePair {
     const word = this.getWordForObstacle(obstacleType);
-    const signY = obstacleY + 300; // 300px before obstacle (since y increases downward relative to camera)
+    // Sign appears 400px above obstacle (lower Y) so it's visible on screen
+    // when the fade-in triggers (player is 300px from obstacle)
+    const signY = obstacleY - 400;
 
     return {
       word,
