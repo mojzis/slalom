@@ -137,8 +137,9 @@ describe('Sign', () => {
       const sign = new Sign(mockScene, 400, 200, 'GAP', 500);
       const fadeInSpy = vi.spyOn(sign, 'fadeIn');
 
-      // Player at y=100, obstacle at y=500, distance = -400 (within -600 to -100 range)
-      sign.checkVisibility(0, 100);
+      // Player at y=700, obstacle at y=500, distance = 200 (within 100-600 range)
+      // Obstacle is above player (smaller Y), player approaching from below
+      sign.checkVisibility(0, 700);
 
       expect(fadeInSpy).toHaveBeenCalled();
       expect(sign.hasBeenSeen).toBe(true);
@@ -149,7 +150,7 @@ describe('Sign', () => {
       sign.hasBeenSeen = true;
       const fadeInSpy = vi.spyOn(sign, 'fadeIn');
 
-      sign.checkVisibility(0, 100);
+      sign.checkVisibility(0, 700);
 
       expect(fadeInSpy).not.toHaveBeenCalled();
     });
@@ -159,8 +160,8 @@ describe('Sign', () => {
       sign.alpha = 1;
       const fadeOutSpy = vi.spyOn(sign, 'fadeOut');
 
-      // Player past obstacle (playerY > obstacleY)
-      sign.checkVisibility(0, 600);
+      // Player past obstacle (playerY < obstacleY, meaning obstacle has scrolled below player)
+      sign.checkVisibility(0, 400);
 
       expect(fadeOutSpy).toHaveBeenCalled();
     });

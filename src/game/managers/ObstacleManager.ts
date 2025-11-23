@@ -29,18 +29,19 @@ export default class ObstacleManager {
   }
 
   update(cameraY: number, playerY: number): void {
-    // Spawn obstacles ahead of camera (below viewport, will scroll into view)
-    const spawnY = cameraY + 600 + this.spawnDistance;
+    // Spawn obstacles ahead of camera (above viewport, will scroll down into view)
+    const spawnY = cameraY - this.spawnDistance;
 
     // Spawn new obstacles if camera has scrolled far enough
+    // As camera moves down (cameraY increases), spawnY also increases
     if (this.lastSpawnY === 0 || spawnY - this.lastSpawnY > this.minSpawnInterval) {
       this.spawnObstacle(spawnY);
       this.lastSpawnY = spawnY;
     }
 
-    // Remove obstacles that have scrolled past (above camera viewport)
+    // Remove obstacles that have scrolled past (below camera viewport)
     this.obstacles = this.obstacles.filter(obstacle => {
-      if (obstacle.yPosition < cameraY - 100) {
+      if (obstacle.yPosition > cameraY + 700) {
         obstacle.destroy();
         return false;
       }
@@ -52,9 +53,9 @@ export default class ObstacleManager {
       sign.checkVisibility(cameraY, playerY);
     });
 
-    // Remove signs that have scrolled past (above camera viewport)
+    // Remove signs that have scrolled past (below camera viewport)
     this.signs = this.signs.filter(sign => {
-      if (sign.relatedObstacleY < cameraY - 100) {
+      if (sign.relatedObstacleY > cameraY + 700) {
         sign.destroy();
         return false;
       }
