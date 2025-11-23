@@ -48,14 +48,26 @@ export default class MenuScene extends Phaser.Scene {
 
     // High score display
     const highScore = this.loadHighScore();
-    this.add.text(centerX, centerY + 150, `Best Distance: ${highScore}m`, {
+    this.add.text(centerX, centerY + 170, `Best Distance: ${highScore}m`, {
       fontFamily: 'Quicksand, sans-serif',
       fontSize: '20px',
       color: '#6B7280'
     }).setOrigin(0.5);
 
+    // How to Play button
+    const helpButton = this.add.text(centerX, centerY + 120, 'How to Play', {
+      fontFamily: 'Quicksand, sans-serif',
+      fontSize: '24px',
+      color: '#8FA9B8'
+    }).setOrigin(0.5);
+
+    helpButton.setInteractive({ useHandCursor: true });
+    helpButton.on('pointerover', () => helpButton.setColor('#4A5568'));
+    helpButton.on('pointerout', () => helpButton.setColor('#8FA9B8'));
+    helpButton.on('pointerdown', () => this.scene.start('HelpScene'));
+
     // Instructions
-    this.add.text(centerX, centerY + 200, 'Use LEFT/RIGHT arrows to switch lanes', {
+    this.add.text(centerX, centerY + 220, 'Use LEFT/RIGHT arrows to switch lanes', {
       fontFamily: 'Quicksand, sans-serif',
       fontSize: '16px',
       color: '#8FA9B8'
