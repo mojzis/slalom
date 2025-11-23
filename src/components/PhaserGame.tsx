@@ -8,7 +8,11 @@ export function getGameInstance(): Phaser.Game | null {
   return gameInstance;
 }
 
-export default function PhaserGame() {
+interface Props {
+  onGameReady?: (game: Phaser.Game) => void;
+}
+
+export default function PhaserGame({ onGameReady }: Props) {
   const gameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -18,6 +22,11 @@ export default function PhaserGame() {
         ...config,
         parent: gameRef.current
       });
+
+      // Notify parent that game is ready
+      if (onGameReady) {
+        onGameReady(gameInstance);
+      }
     }
 
     // Cleanup on unmount
@@ -27,7 +36,7 @@ export default function PhaserGame() {
         gameInstance = null;
       }
     };
-  }, []);
+  }, [onGameReady]);
 
   return <div ref={gameRef} id="game-container" />;
 }

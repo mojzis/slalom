@@ -18,10 +18,18 @@ export default class Player extends Phaser.GameObjects.Graphics {
 
   drawPlayer(): void {
     this.clear();
-    this.lineStyle(2, 0x8FA9B8);
-    this.fillStyle(0x8FA9B8, 0.3);
-    this.strokeCircle(0, 0, 20);
-    this.fillCircle(0, 0, 20);
+
+    // Thin outline
+    this.lineStyle(1.5, 0x8FA9B8, 1);
+    this.fillStyle(0x8FA9B8, 0.2);
+
+    // Simple circle shape
+    this.strokeCircle(0, 0, 22);
+    this.fillCircle(0, 0, 22);
+
+    // Add small center dot
+    this.fillStyle(0x8FA9B8, 0.6);
+    this.fillCircle(0, 0, 6);
   }
 
   moveToLane(lane: number, lanePositions: number[]): void {
@@ -42,6 +50,20 @@ export default class Player extends Phaser.GameObjects.Graphics {
         this.isTransitioning = false;
       }
     });
+  }
+
+  setLane(lane: number, lanePositions: number[]): void {
+    if (lane >= 0 && lane < lanePositions.length) {
+      this.currentLane = lane;
+      this.targetLane = lane;
+      this.setX(lanePositions[lane]);
+    }
+  }
+
+  updateLanePosition(lanePositions: number[]): void {
+    if (this.currentLane < lanePositions.length) {
+      this.setX(lanePositions[this.currentLane]);
+    }
   }
 
   crash(): void {

@@ -33,6 +33,7 @@ vi.mock('phaser', () => {
       this.alpha = alpha;
       return this;
     });
+    setDepth = vi.fn().mockReturnThis();
     destroy = vi.fn();
   }
 
@@ -90,7 +91,7 @@ describe('Sign', () => {
         0, 0, 'ROCK',
         expect.objectContaining({
           fontFamily: 'Quicksand, sans-serif',
-          fontSize: '32px',
+          fontSize: '40px',
         })
       );
     });

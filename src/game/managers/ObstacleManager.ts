@@ -3,6 +3,7 @@ import Obstacle, { ObstacleType } from '../objects/Obstacle';
 import Player from '../objects/Player';
 import Sign from '../objects/Sign';
 import WordManager from './WordManager';
+import { DifficultyTier } from './DifficultyManager';
 
 export default class ObstacleManager {
   scene: Phaser.Scene;
@@ -13,6 +14,7 @@ export default class ObstacleManager {
   lanePositions: number[];
   minSpawnInterval: number;
   wordManager: WordManager;
+  private currentTier: DifficultyTier;
 
   constructor(scene: Phaser.Scene, lanePositions: number[]) {
     this.scene = scene;
@@ -23,6 +25,7 @@ export default class ObstacleManager {
     this.lanePositions = lanePositions;
     this.minSpawnInterval = 200; // Minimum 200px between obstacles
     this.wordManager = new WordManager();
+    this.currentTier = DifficultyTier.BEGINNER;
   }
 
   update(cameraY: number, playerY: number): void {
@@ -62,7 +65,9 @@ export default class ObstacleManager {
   spawnObstacle(y: number): void {
     const lane = Phaser.Math.Between(0, this.lanePositions.length - 1);
     const x = this.lanePositions[lane];
-    const types: ObstacleType[] = ['rock', 'tree', 'gap'];
+
+    // Get obstacle types based on difficulty tier
+    const types = this.getObstacleTypesForTier();
     const type = Phaser.Utils.Array.GetRandom(types);
 
     // Create obstacle
@@ -73,6 +78,19 @@ export default class ObstacleManager {
     const pair = this.wordManager.generatePair(type, lane, y);
     const sign = new Sign(this.scene, x, pair.signY, pair.word, y);
     this.signs.push(sign);
+  }
+
+  private getObstacleTypesForTier(): ObstacleType[] {
+    switch (this.currentTier) {
+      case DifficultyTier.BEGINNER:
+        return ['rock', 'tree', 'gap'];
+      case DifficultyTier.INTERMEDIATE:
+        return ['rock', 'tree', 'gap', 'branch', 'ice'];
+      case DifficultyTier.ADVANCED:
+        return ['rock', 'tree', 'gap', 'branch', 'ice'];
+      default:
+        return ['rock', 'tree', 'gap'];
+    }
   }
 
   checkCollisions(player: Player): boolean {
@@ -100,5 +118,14 @@ export default class ObstacleManager {
 
   getSigns(): Sign[] {
     return this.signs;
+  }
+
+  setLanePositions(lanePositions: number[]): void {
+    this.lanePositions = lanePositions;
+  }
+
+  setDifficultyTier(tier: DifficultyTier): void {
+    this.currentTier = tier;
+    this.wordManager.setDifficulty(tier);
   }
 }

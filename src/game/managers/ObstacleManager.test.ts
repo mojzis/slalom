@@ -60,6 +60,7 @@ vi.mock('phaser', () => ({
         fillRect = vi.fn().mockReturnThis();
         strokeRect = vi.fn().mockReturnThis();
         destroy = vi.fn();
+        setDepth = vi.fn().mockReturnThis();
         x = 0;
         y = 0;
 

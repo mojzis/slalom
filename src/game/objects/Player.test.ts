@@ -27,6 +27,11 @@ vi.mock('phaser', () => {
       this.y = y;
       return this;
     });
+    setX = vi.fn().mockImplementation((x: number) => {
+      this.x = x;
+      return this;
+    });
+    setDepth = vi.fn().mockReturnThis();
     destroy = vi.fn();
   }
 
@@ -190,8 +195,8 @@ describe('Player', () => {
       player.drawPlayer();
 
       expect(player.clear).toHaveBeenCalled();
-      expect(player.strokeCircle).toHaveBeenCalledWith(0, 0, 20);
-      expect(player.fillCircle).toHaveBeenCalledWith(0, 0, 20);
+      expect(player.strokeCircle).toHaveBeenCalledWith(0, 0, 22);
+      expect(player.fillCircle).toHaveBeenCalledWith(0, 0, 22);
     });
   });
 });
