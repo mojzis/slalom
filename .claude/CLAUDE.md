@@ -57,9 +57,9 @@ Standard conversation-based development is fine for:
 
 ## Technology Stack
 
-- **Frontend Framework**: React 18 + TypeScript
-- **Game Engine**: Phaser 3.80
-- **Build Tool**: Vite 5
+- **Frontend Framework**: React 19 + TypeScript
+- **Game Engine**: Phaser 3.90
+- **Build Tool**: Vite 7
 - **Testing**: Vitest + React Testing Library
 - **Package Manager**: npm
 
