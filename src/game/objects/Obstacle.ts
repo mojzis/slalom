@@ -33,17 +33,17 @@ export default class Obstacle extends Phaser.GameObjects.Graphics {
 
     switch (this.obstacleType) {
       case 'rock':
-        // Organic rock shape with thin lines
-        this.lineStyle(1.5, 0xC9B8AD, 1);
-        this.fillStyle(0xC9B8AD, 0.2);
+        // Organic rock shape - more visible
+        this.lineStyle(2, 0x8B7355, 1);
+        this.fillStyle(0xA89080, 0.8);
         this.strokeCircle(0, 0, 28);
         this.fillCircle(0, 0, 28);
         break;
 
       case 'tree':
-        // Simple triangle with thin lines
-        this.lineStyle(1.5, 0xB8C4B8, 1);
-        this.fillStyle(0xB8C4B8, 0.2);
+        // Simple triangle - more visible
+        this.lineStyle(2, 0x6B8E6B, 1);
+        this.fillStyle(0x7FA07F, 0.8);
         this.beginPath();
         this.moveTo(0, -35);
         this.lineTo(-25, 35);
@@ -54,25 +54,25 @@ export default class Obstacle extends Phaser.GameObjects.Graphics {
         break;
 
       case 'gap':
-        // Dark gap in ground
-        this.lineStyle(1, 0x4A5568, 0.5);
-        this.fillStyle(0x4A5568, 0.3);
+        // Dark gap in ground - more visible
+        this.lineStyle(2, 0x2C3E50, 1);
+        this.fillStyle(0x34495E, 0.9);
         this.fillRect(-35, -8, 70, 16);
         this.strokeRect(-35, -8, 70, 16);
         break;
 
       case 'branch':
-        // Horizontal branch
-        this.lineStyle(1.5, 0xB8C4B8, 1);
-        this.fillStyle(0xB8C4B8, 0.2);
+        // Horizontal branch - more visible
+        this.lineStyle(2, 0x6B8E6B, 1);
+        this.fillStyle(0x7FA07F, 0.8);
         this.fillRect(-40, -4, 80, 8);
         this.strokeRect(-40, -4, 80, 8);
         break;
 
       case 'ice':
-        // Icy patch with lighter color
-        this.lineStyle(1.5, 0xB8D4E8, 1);
-        this.fillStyle(0xB8D4E8, 0.15);
+        // Icy patch - more visible with blue tint
+        this.lineStyle(2, 0x5DADE2, 1);
+        this.fillStyle(0x85C1E9, 0.7);
         this.strokeCircle(0, 0, 32);
         this.fillCircle(0, 0, 32);
         break;
