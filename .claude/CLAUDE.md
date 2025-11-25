@@ -26,10 +26,19 @@ Standard conversation-based development is fine for:
 
 ## Project Structure
 
-- `plans/` - High-level feature plans and detailed implementation plans
-- `logs/` - Agent outputs (test results, reviews, summaries)
+- `plans/` - High-level feature plans and detailed implementation plans (optional)
+- `logs/` - Agent outputs (test results, reviews, summaries) (optional)
 - `src/` - Source code
-- `tests/` - Test files
+  - `src/game/` - Phaser game code
+    - `src/game/scenes/` - Game scenes (MainScene, MenuScene, GameOverScene, HelpScene)
+    - `src/game/objects/` - Game objects (Player, Obstacle, Sign, Background, Lane)
+    - `src/game/managers/` - Game managers (ObstacleManager, ScoreManager, DifficultyManager, WordManager)
+    - `src/game/config.ts` - Game configuration
+  - `src/components/` - React components (PhaserGame, GameOverlay)
+  - `src/data/` - Data files (wordLists, theme)
+  - `src/test/` - Test setup files
+  - `src/main.tsx` - React entry point
+  - `src/App.tsx` - Main React app component
 
 ## Quick Start for New Features
 
@@ -48,4 +57,35 @@ Standard conversation-based development is fine for:
 
 ## Technology Stack
 
-[To be filled in based on your project choices]
+- **Frontend Framework**: React 18 + TypeScript
+- **Game Engine**: Phaser 3.80
+- **Build Tool**: Vite 5
+- **Testing**: Vitest + React Testing Library
+- **Package Manager**: npm
+
+### Development Commands
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production (runs TypeScript compiler + Vite build)
+- `npm run preview` - Preview production build
+- `npm test` - Run tests once
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage report
+
+## Game Architecture
+
+This is a word-reading skiing game where the player:
+1. Controls a skier moving down slopes in lanes
+2. Reads word signs that appear before obstacles
+3. Avoids obstacles (rocks, trees, gaps, branches, ice)
+4. Progresses through difficulty tiers with increasing speed and more lanes
+
+### Key Classes
+
+- **MainScene** (`src/game/scenes/MainScene.ts`) - Main game loop and scene management
+- **Player** (`src/game/objects/Player.ts`) - Skier character with lane movement
+- **Obstacle** (`src/game/objects/Obstacle.ts`) - Game obstacles with collision detection
+- **Sign** (`src/game/objects/Sign.ts`) - Word signs that appear before obstacles
+- **ObstacleManager** (`src/game/managers/ObstacleManager.ts`) - Spawns and manages obstacles
+- **DifficultyManager** (`src/game/managers/DifficultyManager.ts`) - Handles difficulty progression
+- **WordManager** (`src/game/managers/WordManager.ts`) - Manages word selection for signs
